@@ -7,12 +7,15 @@ EXEC_FILEPATH=/usr/local/bin/
 SERVC_FILE=check_display_connected.service
 SERVC_FILEPATH=/etc/systemd/system/
 
-if [ "$1" == "install" ]
+if [ "$1" == "install_cfg" ]
 then
 	mkdir -p ~/.screenlayout
 	if [ ! -f $XRANDR_FILEPATH$XRANDR_FILE ]; then
 	    cp $XRANDR_FILE $XRANDR_FILEPATH
 	fi
+
+elif [ "$1" == "install_exec" ]
+then
 	if [ ! -f $EXEC_FILE$EXEC_FILEPATH ]; then
 	    cp $EXEC_FILE $EXEC_FILEPATH
 	fi
@@ -23,13 +26,16 @@ then
 	systemctl enable $SERVC_FILE
 	systemctl start $SERVC_FILE
 
-elif [ "$1" == "remove" ]
+elif [ "$1" == "remove_cfg" ]
 then
-	systemctl stop $SERVC_FILE
-	systemctl disable $SERVC_FILE
 	if [ -e "$XRANDR_FILEPATH$XRANDR_FILE" ]; then
 	    rm $XRANDR_FILEPATH$XRANDR_FILE
 	fi
+
+elif [ "$1" == "remove_exec" ]
+then
+	systemctl stop $SERVC_FILE
+	systemctl disable $SERVC_FILE
 	if [ -e "$EXEC_FILEPATH$EXEC_FILE" ]; then
 	    rm $EXEC_FILEPATH$EXEC_FILE
 	fi
