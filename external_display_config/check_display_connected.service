@@ -1,0 +1,10 @@
+[Unit]
+Description=Configure xrandr if external monitor connected
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/check_display_connected.py
+
+[Install]
+WantedBy=multi-user.target
