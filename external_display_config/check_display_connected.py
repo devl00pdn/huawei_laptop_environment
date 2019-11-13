@@ -1,4 +1,8 @@
+#!/usr/bin/env python3
+
+import shlex
 import subprocess
+from subprocess import Popen, PIPE
 import time
 
 #--- set both commands (connect / disconnect) below
@@ -6,29 +10,35 @@ connect_command = "~/.screenlayout/xrandr_huawei_plus_hp_config.sh"
 disconnect_command = "echo display disconected"
 #---
 
-def get(cmd): return subprocess.check_output(cmd).decode("utf-8")
+def get_connected_display_count(): 
+    process = Popen(shlex.split("xrandr"), stdout=PIPE)
+    (output, err) = process.communicate()
+    exit_code = process.wait()
+    out_string = output.decode("utf-8")
+    connected_counter = 0
+    for word in out_string.split(' '):
+        if word == "connected":
+            connected_counter+=1
+    return connected_counter
+
 # - to count the occurrenc of " connected "
 def count_screens(xr): return xr.count(" connected ")
 # - to run the connect / disconnect command(s)
 def run_command(cmd): subprocess.Popen(["/bin/bash", "-c", cmd])
 
 # first count
-xr1 = None
+display_count_on_startup = 0
+previous_display_count = 0
 
 while True:
     time.sleep(5)
-    # second count
-    xr2 = count_screens(get(["xrandr"]))
-    # check if there is a change in the screen state
-    if xr2 != xr1:
-        print("change")
-        if xr2 == 2:
-            # command to run if connected (two screens)
+    if(display_count_on_startup == 0):
+        display_count_on_startup = get_connected_display_count()
+        previous_display_count = display_count_on_startup
+        if(display_count_on_startup > 1):
             run_command(connect_command)
-        elif xr2 == 1:
-            # command to run if disconnected (one screen)
-            #run_command(disconnect_command) 
-            pass
-            # run_command(disconnect_command)
-    # set the second count as initial state for the next loop
-    xr1 = xr2
+    else:
+        display_count =  get_connected_display_count()
+        if(display_count != previous_display_count):
+            previous_display_count = display_count
+            run_command(connect_command)
