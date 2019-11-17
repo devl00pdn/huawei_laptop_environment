@@ -3,41 +3,36 @@
 XRANDR_FILE=xrandr_huawei_plus_hp_config.sh
 XRANDR_FILEPATH=~/.screenlayout/
 EXEC_FILE=check_display_connected.py
-EXEC_FILEPATH=/usr/local/bin/
+EXEC_FILEPATH=/usr/bin/
 SERVC_FILE=check_display_connected.service
-SERVC_FILEPATH=/etc/systemd/system/
+SERVC_FILEPATH=~/.config/systemd/user/
 
-if [ "$1" == "install_cfg" ]
-then
+if [ "$1" == "install" ];then
 	mkdir -p ~/.screenlayout
+	mkdir -p ~/.config
+	mkdir -p ~/.config/systemd/
+	mkdir -p ~/.config/systemd/user/
 	if [ ! -f $XRANDR_FILEPATH$XRANDR_FILE ]; then
 	    cp $XRANDR_FILE $XRANDR_FILEPATH
 	fi
-
-elif [ "$1" == "install_exec" ]
-then
 	if [ ! -f $EXEC_FILE$EXEC_FILEPATH ]; then
-	    cp $EXEC_FILE $EXEC_FILEPATH
+	    sudo cp $EXEC_FILE $EXEC_FILEPATH
 	fi
 	if [ ! -f $SERVC_FILE$SERVC_FILEPATH ]; then
 	    cp $SERVC_FILE $SERVC_FILEPATH
 	fi
-	systemctl daemon-reload
-	systemctl enable $SERVC_FILE
-	systemctl start $SERVC_FILE
+	systemctl --user daemon-reload
+	systemctl --user enable $SERVC_FILE
+	systemctl --user start $SERVC_FILE
 
-elif [ "$1" == "remove_cfg" ]
-then
+elif [ "$1" == "remove" ];then
 	if [ -e "$XRANDR_FILEPATH$XRANDR_FILE" ]; then
 	    rm $XRANDR_FILEPATH$XRANDR_FILE
 	fi
-
-elif [ "$1" == "remove_exec" ]
-then
-	systemctl stop $SERVC_FILE
-	systemctl disable $SERVC_FILE
+	systemctl --user stop $SERVC_FILE
+	systemctl --user disable $SERVC_FILE
 	if [ -e "$EXEC_FILEPATH$EXEC_FILE" ]; then
-	    rm $EXEC_FILEPATH$EXEC_FILE
+	    sudo rm $EXEC_FILEPATH$EXEC_FILE
 	fi
 	if [ -e "$SERVC_FILEPATH$SERVC_FILE" ]; then
 	    rm $SERVC_FILEPATH$SERVC_FILE

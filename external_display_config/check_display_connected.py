@@ -31,7 +31,6 @@ display_count_on_startup = 0
 previous_display_count = 0
 
 while True:
-    time.sleep(5)
     if(display_count_on_startup == 0):
         display_count_on_startup = get_connected_display_count()
         previous_display_count = display_count_on_startup
@@ -42,3 +41,4 @@ while True:
         if(display_count != previous_display_count):
             previous_display_count = display_count
             run_command(connect_command)
+    time.sleep(5)
