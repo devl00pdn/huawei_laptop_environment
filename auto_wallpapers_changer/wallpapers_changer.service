@@ -1,0 +1,10 @@
+[Unit]
+Description=Auto changer wallpapers. Dependent from feh.
+After=default.target
+
+[Service]
+ExecStart=bgchd -dir ~/Pictures/Wallpapers -bcknd feh -rpl -intv 240m
+
+[Install]
+WantedBy=default.target
+
