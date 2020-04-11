@@ -281,6 +281,10 @@ exec --no-startup-id clipit
 # exec --no-startup-id blueman-applet
 # exec_always --no-startup-id sbxkb
 exec --no-startup-id start_conky_maia
+#wallpaper restore last settings nitrogen
+exec --no-startup-id nitrogen --restore
+# start battery protect widget
+exec --no-startup-id matebook-applet
 # exec --no-startup-id start_conky_green
 exec --no-startup-id xautolock -time 10 -locker blurlock
 exec_always --no-startup-id ff-theme-util
